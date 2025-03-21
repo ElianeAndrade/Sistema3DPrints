@@ -1,24 +1,36 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
-namespace Sistema3DPrints;
-
-public partial class MainWindow : Window
+namespace Sistema3DPrints
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        BancoDeDados bd = new BancoDeDados();
-        bd.Conectar();
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+        }
+
+        private void CadastroClienteButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClienteWindow clienteWindow = new ClienteWindow();
+            clienteWindow.Show();
+        }
+
+        private void CadastroPedidoButton_Click(object sender, RoutedEventArgs e)
+        {
+            PedidoWindow pedidoWindow = new PedidoWindow();
+            pedidoWindow.Show();
+        }
+
+        private void CadastroOrcamentoButton_Click(object sender, RoutedEventArgs e)
+        {
+            OrcamentoWindow orcamentoWindow = new OrcamentoWindow();
+            orcamentoWindow.Show();
+        }
     }
 }
-
-//teste

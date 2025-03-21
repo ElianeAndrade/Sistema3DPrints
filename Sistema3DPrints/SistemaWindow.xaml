@@ -1,0 +1,10 @@
+﻿<Window x:Class="Sistema3DPrints.SistemaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sistema de Cadastro" Height="400" Width="600">
+    <Grid>
+        <Button Content="Cadastrar Cliente" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="30" Margin="50,50,0,0"/>
+        <Button Content="Cadastrar Pedido" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="30" Margin="50,100,0,0"/>
+        <Button Content="Cadastrar Orçamento" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="30" Margin="50,150,0,0"/>
+    </Grid>
+</Window>
