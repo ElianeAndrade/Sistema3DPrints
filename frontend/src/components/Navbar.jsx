@@ -17,8 +17,8 @@ const Navbar = () => {
         <Link to="/orcamentos" className="nav-item">
           <FaFileInvoice /> <span>Orçamentos</span>
         </Link>
-        <Link to="/configuracoes" className="nav-item">
-          <FaCog /> <span>Configurações</span>
+        <Link to="/portfolio" className="nav-item">
+          <FaCog /> <span>Portfólio</span>
         </Link>
         <Link to="/" className="nav-item logout">
           <FaSignOutAlt /> <span>Sair</span>

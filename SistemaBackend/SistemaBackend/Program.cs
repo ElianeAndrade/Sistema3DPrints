@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
             builder.WithOrigins("http://localhost:3001")  // Permite apenas o frontend específico
                    .AllowAnyMethod()   // Permite qualquer método (GET, POST, etc.)
                    .AllowAnyHeader();  // Permite qualquer cabeçalho
-                   //.AllowCredentials();
+                  
         });
 });
 

@@ -4,8 +4,8 @@ import LoginPage from "./pages/LoginPage";
 import ClientesPage from "./pages/ClientesPage";
 import PedidoPage from "./pages/PedidoPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
-import ConfiguracoesPage from "./pages/ConfiguracoesPage";
 import Navbar from "./components/Navbar";
+import PortifolioPage from "./pages/PortifolioPage";
 
 const App = () => {
     // Estados de login e carregamento
@@ -52,8 +52,8 @@ const App = () => {
                     element={loggedIn ? <OrcamentosPage /> : <Navigate to="/" />}
                 />
                 <Route
-                    path="/configuracoes"
-                    element={loggedIn ? <ConfiguracoesPage /> : <Navigate to="/" />}
+                    path="/portfolio"
+                    element={loggedIn ? <PortifolioPage /> : <Navigate to="/" />}
                 />
             </Routes>
         </Router>

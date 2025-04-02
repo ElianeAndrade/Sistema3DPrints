@@ -1,141 +1,136 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import "../style/Cliente.css";
+import Cliente from "../components/Cliente";
+import { FaSearch } from "react-icons/fa"; // Ícones modernos
+import AdicionarCliente from "../components/AdicionarCliente";
 
 const ClientesPage = () => {
   const [clientes, setClientes] = useState([]);
-  const [clienteEdit, setClienteEdit] = useState(null); // Para editar o cliente
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [endereco, setEndereco] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [observacao, setObservacao] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [filtro, setFiltro] = useState("");
+  const [editandoId, setEditandoId] = useState(null);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [mensagem, setMensagem] = useState(""); // Para exibir mensagens de sucesso ou erro
 
-  // Buscar os clientes ao carregar a página
+  const pageSize = 20; // Número de clientes por página
+
+  // Busca os clientes da API
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get("http://localhost:7281/api/cliente/buscaClientes");
-        setClientes(response.data);
+        const response = await axios.get(
+          `https://localhost:7281/api/cliente/buscaClientes?filtro=${filtro}&page=${paginaAtual}&pageSize=${pageSize}`
+        );
+        setClientes(response.data.clientes);
+        setTotalPaginas(response.data.total ? Math.ceil(response.data.total / pageSize) : 1);
       } catch (error) {
         console.error("Erro ao buscar clientes", error);
       }
     };
 
     fetchClientes();
-  }, []);
+  }, [paginaAtual, filtro]);
 
-  // Deletar cliente
+  // Atualiza o filtro
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value);
+  };
+
+  // Exclui um cliente
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:7281/api/cliente/deletaClientes/${id}`);
-      setClientes(clientes.filter(cliente => cliente.id !== id)); // Atualiza a lista removendo o cliente
+      await axios.delete(`https://localhost:7281/api/cliente/deletaClientes/${id}`);
+      setClientes(clientes.filter(cliente => cliente.id !== id));
+      setMensagem("Cliente excluído com sucesso!"); // Mensagem de exclusão
+      setTimeout(() => setMensagem(""), 3000); // Remove a mensagem após 3 segundos
     } catch (error) {
-      console.error("Erro ao excluir cliente", error);
+      console.error("Erro ao deletar cliente", error);
     }
   };
 
-  // Exibir o modal de edição
-  const handleEdit = (cliente) => {
-    setClienteEdit(cliente);
-    setNome(cliente.nome);
-    setCpf(cliente.cpf);
-    setEmail(cliente.email);
-    setTelefone(cliente.telefone);
-    setEndereco(cliente.endereco);
-    setCidade(cliente.cidade);
-    setObservacao(cliente.observacao);
-  };
-
-  // Atualizar os dados do cliente
-  const handleUpdate = async (id) => {
-    const updatedCliente = {
-      id,
-      nome,
-      cpf,
-      email,
-      telefone,
-      endereco,
-      cidade,
-      observacao,
-    };
-
-    try {
-      await axios.put(`http://localhost:7281/api/cliente/atualizaClientes/${id}`, updatedCliente);
-      setClientes(clientes.map(cliente => cliente.id === id ? updatedCliente : cliente)); // Atualiza a lista
-      setClienteEdit(null); // Fecha o modal de edição
-    } catch (error) {
-      console.error("Erro ao atualizar cliente", error);
-    }
+  // Adiciona um novo cliente
+  const adicionarCliente = (novoCliente) => {
+    setClientes([novoCliente, ...clientes]); // Adiciona o cliente no topo da lista
+    setFiltro(novoCliente.nome); // Atualiza o filtro para mostrar o novo cliente
+    setMensagem("Cliente salvo com sucesso!"); // Mensagem de sucesso
+    setTimeout(() => setMensagem(""), 3000); // Remove a mensagem após 3 segundos
   };
 
   return (
-    <div>
-      <h1>Clientes</h1>
-      <table>
+    <div className="container">
+      <div className="topo-container">
+        <h1>Clientes</h1>
+        <button className="adicionar-cliente" onClick={() => setModalAberto(true)}>+ Adicionar Cliente</button>
+      </div>
+      
+      {/* Mensagem de sucesso ou erro */}
+      {mensagem && <div className="mensagem">{mensagem}</div>}
+
+      <AdicionarCliente
+        isOpen={modalAberto}
+        onClose={() => setModalAberto(false)}
+        adicionarCliente={adicionarCliente}
+        setFiltro={setFiltro}
+      />
+
+      {/* Área de Filtro */}
+      <div className="filtro-container">
+        <FaSearch className="filtro-icone" />
+        <input
+          type="text"
+          placeholder={`Buscar por Nome ou ID`}
+          value={filtro}
+          onChange={handleFiltroChange}
+          className="filtro-input"
+        />
+      </div>
+
+      {/* Espaço entre filtro e tabela */}
+      <div className="espacamento"></div>
+
+      {/* Tabela de Clientes */}
+      <table className="tabela">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>CPF</th>
             <th>Email</th>
             <th>Telefone</th>
+            <th>Observações</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
           {clientes.map((cliente) => (
-            <tr key={cliente.id}>
-              <td>{cliente.nome}</td>
-              <td>{cliente.cpf}</td>
-              <td>{cliente.email}</td>
-              <td>{cliente.telefone}</td>
-              <td>
-                <button onClick={() => handleEdit(cliente)}>Editar</button>
-                <button onClick={() => handleDelete(cliente.id)}>Excluir</button>
-              </td>
-            </tr>
+            <Cliente
+              key={cliente.id}
+              cliente={cliente}
+              editandoId={editandoId}
+              setEditandoId={setEditandoId} 
+              setClientes={setClientes}
+              clientes={clientes}
+              handleDelete={handleDelete}
+            />
           ))}
         </tbody>
       </table>
 
-      {/* Modal de edição do cliente */}
-      {clienteEdit && (
-        <div className="modal">
-          <h2>Editar Cliente</h2>
-          <div>
-            <label>Nome:</label>
-            <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
-          </div>
-          <div>
-            <label>CPF:</label>
-            <input type="text" value={cpf} onChange={(e) => setCpf(e.target.value)} />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <label>Telefone:</label>
-            <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
-          </div>
-          <div>
-            <label>Endereço:</label>
-            <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)} />
-          </div>
-          <div>
-            <label>Cidade:</label>
-            <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} />
-          </div>
-          <div>
-            <label>Observação:</label>
-            <input type="text" value={observacao} onChange={(e) => setObservacao(e.target.value)} />
-          </div>
-          <button onClick={() => handleUpdate(clienteEdit.id)}>Salvar</button>
-          <button onClick={() => setClienteEdit(null)}>Cancelar</button>
-        </div>
-      )}
+      {/* Espaço entre tabela e paginação */}
+      <div className="espacamento"></div>
+
+      {/* Botões de Paginação */}
+      <div className="paginacao">
+        <button disabled={paginaAtual === 1} onClick={() => setPaginaAtual(paginaAtual - 1)}>
+          ⬅️ Anterior
+        </button>
+        <span>Página {paginaAtual} de {totalPaginas}</span>
+        <button disabled={paginaAtual === totalPaginas} onClick={() => setPaginaAtual(paginaAtual + 1)}>
+          Próxima ➡️
+        </button>
+      </div>
     </div>
   );
 };

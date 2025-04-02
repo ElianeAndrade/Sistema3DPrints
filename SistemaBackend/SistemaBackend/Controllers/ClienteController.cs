@@ -10,7 +10,8 @@ using DotNetEnv;
 
 
 namespace SistemaBackend.Controllers;
-
+[ApiController]
+[Route("api/cliente")]
 public class ClienteController : ControllerBase
 {
     private readonly ClienteService _clienteService;
@@ -28,11 +29,32 @@ public class ClienteController : ControllerBase
     }
 
     [HttpGet("buscaClientes")]
-    public async Task<IActionResult> ObterClientes()
+    public async Task<IActionResult> ObterClientes([FromQuery] string? filtro, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var clientes = await _clienteService.ObterClientes();
-        return Ok(clientes);
+        using var conexao = new MySqlConnection(_connectionString);
+
+        // 🔹 Conta o número total de clientes filtrados
+        string countSql = "SELECT COUNT(*) FROM clientes WHERE (@Filtro IS NULL OR nome LIKE CONCAT('%', @Filtro, '%') OR id = @Filtro)";
+        int total = await conexao.ExecuteScalarAsync<int>(countSql, new { Filtro = string.IsNullOrEmpty(filtro) ? null : filtro });
+
+        // 🔹 Pega os clientes filtrados, com paginação
+        string sql = @"
+        SELECT * FROM clientes
+        WHERE (@Filtro IS NULL OR nome LIKE CONCAT('%', @Filtro, '%') OR id = @Filtro)
+        LIMIT @PageSize OFFSET @Offset";
+
+        var parametros = new
+        {
+            Filtro = string.IsNullOrEmpty(filtro) ? null : filtro,
+            PageSize = pageSize,
+            Offset = (page - 1) * pageSize
+        };
+
+        var clientes = await conexao.QueryAsync<Clientes>(sql, parametros);
+
+        return Ok(new { clientes, total }); // ✅ Retorna também o total
     }
+
 
     [HttpPost("novoCliente")]
     public async Task<IActionResult> CriarCliente([FromBody] Clientes novoCliente)
