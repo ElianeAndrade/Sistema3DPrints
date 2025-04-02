@@ -372,3 +372,4 @@ k6-out/
 appsettings.json
 appsettings.Development.json
 .env
+node_modules/
