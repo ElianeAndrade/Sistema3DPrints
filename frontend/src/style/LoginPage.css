@@ -1,0 +1,80 @@
+/* Alinhamento da tela */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-image: /*url('../../img/modelo.jpg')*/url('https://picsum.photos/1920/1080'); /* Imagem aleatória*/
+    background-size: cover; /* Faz a imagem cobrir toda a área */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+    background-color: rgba(0, 0, 0, 0.5); /* Cor preta com 50% de transparência */
+    background-blend-mode: overlay; /* Mistura a cor com a imagem */
+    padding-top: 200px; /* Espaço no topo para o título */
+}
+
+.login-container h2 {
+    color: white;
+    /* Cor do texto */
+    font-size: 30px;
+    /* Tamanho da fonte */
+    text-align: center;
+    /* Centralizar o texto */
+    margin-bottom: 40px;
+    /* Espaço abaixo do título */
+}
+
+/* Estilo do formulário */
+.login-form {
+    background-color: rgb(255, 255, 255);
+    padding: 5px 20px 20px 20px; /* Reduz o padding superior para 10px */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Corrigido o erro de sombra */
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Título do formulário */
+.login-form h2 {
+    text-align: center;
+    background-color: rgb(252, 252, 252);
+    color: #0a0a0a;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+/* Estilo dos campos de input */
+.login-form label {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-weight: bold;
+    line-height: 2.0;
+}
+
+.login-form input {
+    flex: 1;
+    padding: 10px;
+    margin-left: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #0a0a0a;
+}
+
+/* Estilo do botão */
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #c0ff01;
+    color: rgb(10, 10, 10);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.login-form button:hover {
+    background-color: #e2fa9b;
+}
